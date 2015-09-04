@@ -6,13 +6,13 @@
 //  Copyright (c) 2015 asu. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "TCAppDelegate.h"
 
-@interface AppDelegate ()
+@interface TCAppDelegate ()
 
 @end
 
-@implementation AppDelegate
+@implementation TCAppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
