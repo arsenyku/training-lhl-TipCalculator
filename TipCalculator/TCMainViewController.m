@@ -14,6 +14,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *suggestedTipTextField;
 @property (weak, nonatomic) IBOutlet UILabel *suggestedTotalTextField;
 
+
+@property (assign, nonatomic) float billAmount;
+@property (assign, nonatomic) float tipPercentage;
 @end
 
 @implementation TCMainViewController
@@ -52,6 +55,7 @@ static int const DefaultTip = 15;
 #pragma mark - <UITextFieldDelegate>
 
 - (void)billAmountDidChange:(UITextField *)sender{
+    self.billAmount = [self floatFromText:self.billAmountTextField.text];
     [self recalculateValues];
 }
 
@@ -74,18 +78,16 @@ static int const DefaultTip = 15;
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
+    self.tipPercentage = (float)row/100.0f;
     [self recalculateValues];
 }
 
 #pragma mark - private
 -(void)recalculateValues{
     
-    float percentage = (float)[self.tipPercentPicker selectedRowInComponent:0] / 100.0f;
     
-    float billAmount = [self floatFromText:self.billAmountTextField.text];
-    
-    float tip = percentage * billAmount;
-    float total = tip + billAmount;
+    float tip = self.tipPercentage * self.billAmount;
+    float total = tip + self.billAmount;
     
     self.suggestedTipTextField.text = [NSString stringWithFormat:@"Tip: %.2f", tip];
     self.suggestedTotalTextField.text = [NSString stringWithFormat:@"Total: %.2f", total];
