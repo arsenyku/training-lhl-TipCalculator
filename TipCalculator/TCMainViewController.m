@@ -8,7 +8,7 @@
 
 #import "TCMainViewController.h"
 
-@interface TCMainViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
+@interface TCMainViewController () <UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *billAmountTextField;
 @property (weak, nonatomic) IBOutlet UIPickerView *tipPercentPicker;
 @property (weak, nonatomic) IBOutlet UILabel *suggestedTipTextField;
@@ -32,6 +32,7 @@ static int const DefaultTip = 15;
     [self.billAmountTextField addTarget:self
                                  action:@selector(billAmountDidChange:)
                        forControlEvents:UIControlEventEditingChanged];
+    self.billAmountTextField.delegate = self;
     
     self.tipPercentPicker.dataSource = self;
     self.tipPercentPicker.delegate = self;
@@ -59,7 +60,13 @@ static int const DefaultTip = 15;
     [self recalculateValues];
 }
 
-
+// return NO to not change text
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    NSMutableString *text = [textField.text mutableCopy];
+    [text replaceCharactersInRange:range withString:string];
+    NSNumber *converted = [self numberFromText:text];
+    return converted;
+}
 
 #pragma mark - <UIPickerViewDataSource>
 
@@ -95,10 +102,15 @@ static int const DefaultTip = 15;
 
 }
 
--(float)floatFromText:(NSString*)text{
+-(NSNumber*)numberFromText:(NSString*)text{
     NSNumberFormatter* numberFormatter = [[NSNumberFormatter alloc] init];
     NSNumber *convertedNumber = [numberFormatter numberFromString:text];
-    return [convertedNumber floatValue];
+    return convertedNumber;
+}
+
+
+-(float)floatFromText:(NSString*)text{
+    return [[self numberFromText:text] floatValue];
 }
 
 @end
